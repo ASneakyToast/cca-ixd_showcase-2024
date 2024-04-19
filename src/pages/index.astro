@@ -1,0 +1,145 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, getEntries } from "astro:content";
+import Layout from '../layouts/Layout.astro';
+import ProjectCard from "../components/project-card.astro";
+
+// Seralizing people list for projects
+const projects = await getCollection( "projects" );
+
+for ( const project of projects ) {
+  const peopleList = await getEntries( project.data.people );
+  if ( project.data.people.length > 1 ) {
+    project.data.peopleList = peopleList.map(( item ) => {
+      return item.data.name;
+    }).join(", ");
+  } else {
+    project.data.peopleList = peopleList[0].data.name;
+  }
+}
+
+// For astro js processed images
+import heroImage from "/src/media/hero-image.png";
+import classPhoto from "/src/media/hero-image.png";
+const projectImages = import.meta.glob( "/src/media/projects/*/*.{jpeg,jpg,png,gif}" );
+const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" );
+---
+
+<Layout title="2024 IxD Showcase">
+	<main>
+    <section class="hero">
+      <Image 
+        class="hero__image"
+        src={ heroImage }
+        alt="Hero image alt text"
+        width="2560"
+        format="webp"
+      />
+    </section>
+
+    <section class="body">
+      <div class="intro-statement">
+        <h2 class="intro-statement__header">Design projects</h2>
+        <p class="intro-statement__intro">We imagine the future of mobile experiences, social networks, products and services, and complex systems while keeping equity, inclusivity, and sustainability at the forefront of design.</p>
+      </div>
+
+      <section id="projects" class="projects">
+        { projects.map(( project ) => (
+          <ProjectCard 
+            slug={ project.slug }
+            title={ project.data.title } 
+            designer={ project.data.peopleList }
+            imageSrc={ project.data.listingImage }
+          />
+        ))}
+      </section>
+
+      <section id="class-photo" class="class-photo">
+        <h2 class="class-photo__header">Class of 2024</h2>
+        <p class="class-photo__intro">We are a group of IXD designers committed to make technology more meaningful, accessible, and delightful</p>
+        <Image
+          src={ classPhoto }
+          alt="A photo of the CCA's 2024 IxD class"
+          width="2560"
+          format="webp"
+          class="class-photo__image"
+        />
+      </section>
+
+    </section>
+	</main>
+</Layout>
+
+<style lang="scss">
+  @import "../styles/type.scss";
+
+  .hero {
+    position: relative;
+    text-align: center;
+    margin: 64px 0;
+    &__image {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+    }
+
+    &__drawing {
+      position: sticky;
+      top: 40px;
+      left: 0;
+      z-index: 1;
+    }
+  }
+
+  .body {
+    margin: 0 var(--spacing-page_gutter);
+  }
+
+  .intro-statement {
+    margin-bottom: 48px;
+
+    &__header {
+      @include type-heading;
+    }
+    &__intro {
+      font-family: Raleway;
+      font-weight: 400;
+      font-size: 24px;
+      color: var(--color-surface-primary-text);
+    }
+  }
+
+  .projects {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-large) var(--spacing-small);
+  }
+
+  .project {
+    &__title {
+      @include type-card-heading;
+    }
+    &__team {
+      @include type-card-label;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      margin-bottom: 30px;
+    }
+  }
+
+  .class-photo {
+    &__header {
+      @include type-heading;
+    }
+    &__intro {
+      @include type-intro--home;
+    }
+    &__image {
+      margin-top: 48px;
+      width: 100%;
+      height: auto;
+    }
+  }
+</style>

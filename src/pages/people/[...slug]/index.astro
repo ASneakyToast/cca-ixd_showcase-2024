@@ -1,0 +1,153 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, getEntries } from "astro:content";
+import Layout from "../../../layouts/layout.astro";
+
+// 1. Generate a new path for every collection entry
+export async function getStaticPaths() {
+  const peopleEntries = await getCollection('people');
+  return peopleEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+// 2. For your template, you can get the entry directly from the prop
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// 2.2 Resolve references in the schema
+const projects = await getEntries( entry.data.projects );
+
+// For astro js processed images
+const people_images = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" );
+---
+
+<Layout title="Page title">
+  <main class="content">
+    <section class="intro">
+      <h1 class="intro__title">{ entry.data.name } ({ entry.data.pronouns })</h1>
+      <p class="intro__subheading">{ entry.data.pronouns }</p>
+      <p class="intro__subheading">Interaction Design</p>
+    </section>
+
+    <section class="sticky-body">
+      <Image 
+        class="intro__headshot"
+        src={ people_images[ entry.data.image ]() }
+        alt={`A photo of ${ entry.data.name }`}
+        width="1440"
+        format="webp"
+      />
+
+      <section class="info">
+        <a class="info__website" href={` https://${ entry.data.website } `}>View website</a>
+        <a class="info__linkedin" href="idk/in/public/I/guess/or/not/acutlaly">LinkedIn</a>
+
+        <Content />
+
+        <h2>Hometown</h2>
+        <p>{ entry.data.hometown }</p>
+
+        <h2>Hobbies</h2>
+        <ul class="intro__hobbies">
+          { entry.data.likes.map(( item ) => (
+            <li>{ item }</li>
+          ))}
+        </ul>
+
+        <h2>Fun fact</h2>
+        <ul class="intro__hobbies">
+          { entry.data.likes.map(( item ) => (
+            <li>{ item }</li>
+          ))}
+        </ul>
+      </section>
+    </section>
+  </main>
+</Layout>
+
+<style lang="scss" is:global>
+  @import "../../../styles/type.scss";
+
+  .info p, .info li {
+    font-family: Raleway, sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 50px;
+    color: #000000;
+  }
+
+  .info p {
+    margin-bottom: 32px;
+  }
+</style>
+
+<style lang="scss">
+  @import "../../../styles/type.scss";
+
+  main.content {
+    padding: 0 var(--spacing-page_gutter);
+  }
+
+  .intro {
+    margin-bottom: 40px;
+
+    &__title {
+      @include type-title;
+      margin-bottom: 30px;
+    }
+    &__headshot {
+      max-width: 50%;
+      width: 100%;
+      height: auto;
+      max-height: 80vh;
+      object-fit: cover;
+      position: sticky;
+      top: 40px;
+    }
+    &__subheading {
+      display: inline-block;
+
+      margin: 0 25px 0 0;
+
+      font-family: Raleway, sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #8B8B8B;
+    }
+  }
+
+  .sticky-body {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+  }
+
+  .info {
+    &__website, &__linkedin {
+      @include type-cta;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      width: fit-content;
+      border: 3px solid #000000;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #000000;
+      padding: 14px 40px;
+      margin-bottom: 32px;
+    }
+    &__linkedin {
+      margin-bottom: 40px;
+    }
+    & h2 {
+      @include type-label;
+    }
+    & p {
+      @include type-intro;
+    }
+    & ul {
+      margin-left: 24px;
+    }
+  }
+</style>

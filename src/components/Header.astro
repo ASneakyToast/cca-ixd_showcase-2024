@@ -1,0 +1,95 @@
+---
+import { getCollection, getEntries } from "astro:content";
+import shuffleIcon from "../media/svgs/shuffle-icon.svg?raw";
+
+// For content
+const projectsEntries = await getCollection('projects');
+
+// For astro js processed images
+const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif}");
+
+// If on project page, remove that page from the surprise me list
+const currentUrl = Astro.url.pathname;
+
+for (const [i, project] of projectsEntries.entries()) {
+  if (currentUrl.includes(project.slug)) {
+    projectsEntries.splice( i, 1 );
+  }
+}
+
+// Pick random page and get url
+const randomIndex = Math.floor(Math.random()*Object.keys(projectsEntries).length);
+const surprisePage = projectsEntries[randomIndex];
+const surprisePageUrl = `/projects/${ surprisePage.slug }`;
+---
+
+<nav class="top-navigation">
+  <section class="top-navigation__links">
+    <a href="/">
+      <p class="top-navigation__link">Home</p>
+    </a>
+    <a href="/projects">
+      <p class="top-navigation__link">Projects</p>
+    </a>
+    <a href="/people/">
+      <p class="top-navigation__link">Designers</p>
+    </a>
+  </section>
+
+  <a href={ surprisePageUrl } class="top-navigation__surprise">Surpirse me<Fragment set:html={ shuffleIcon }/><div class="top-navigation__surprise__background"/></a>
+</nav>
+
+<style lang="scss">
+  @import "../styles/type.scss";
+
+  .top-navigation {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    padding: var(--spacing-small) var(--spacing-page_gutter) var(--spacing-xsmall);
+    border-bottom: 1px solid #E5E7EB;
+
+    &__links {
+      display: flex;
+      flex-direction: row;
+      gap: var(--spacing-medium);
+    }
+
+    &__link {
+      display: inline-block;
+      text-transform: uppercase;
+      color: var(--color-light_gray);
+      @include type-nav-label;
+      margin: 0;
+      padding: var(--spacing-xsmall) 0 var(--spacing-xsmall);
+
+      transition: color 200ms;
+      &:hover {
+        color: black;
+      }
+    }
+
+    &__surprise {
+      @include type-nav-button;
+
+      background-color: #222222;
+      border: none;
+      color: #ffffff;
+      border-radius: 10px;
+
+      padding: 12px 20px;
+
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      align-items: center;
+
+      transition: background-color 200ms;
+      &:hover {
+        background-color: #000000;
+        color: white;
+      }
+    }
+  }
+</style>

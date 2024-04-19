@@ -1,0 +1,247 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, getEntries } from "astro:content";
+import Layout from "../../../layouts/layout.astro";
+import ProjectCard from "../../../components/project-card.astro";
+
+import testy from "../../../media/projects/ixd-showcase/listing_image.jpg";
+
+// 1. Generate a new path for every collection entry
+export async function getStaticPaths() {
+  const projectsEntries = await getCollection('projects');
+  return projectsEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}
+
+// 2. For your template, you can get the entry directly from the prop
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// 2.2 Resolve references in the schema
+const teamMembers = await getEntries( entry.data.people );
+
+// For astro js processed images
+const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif}");
+const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" );
+
+let projectGalleryImages = [];
+for (const [key, value] of Object.entries( projectImages )) {
+  if ( key.includes(`/${ entry.slug }/gallery/`) ) {
+    projectGalleryImages.push( key ); 
+  }
+}
+
+// MORE PROJECTS
+const projects = await getCollection('projects');
+
+// > remove current project from list
+const currentUrl = Astro.url.pathname;
+for (const [i, project] of projects.entries()) {
+  if (currentUrl.includes(project.slug)) {
+    projects.splice( i, 1 );
+  }
+}
+
+// > shuffle project list and grab first 4
+let shuffledProjects = projects.sort(() => 0.5 - Math.random());
+shuffledProjects.slice(0, 4);
+
+const moreProjects = shuffledProjects;
+---
+
+<Layout title="Project title">
+  <main class="content">
+    <section class="intro">
+      <h1 class="intro__title">{ entry.data.title }</h1>
+      <Image
+        class="intro__hero"
+        src={ projectImages[ entry.data.listingImage ]() }
+        alt={ `The hero image for ${ entry.data.title }`}
+        width="1440"
+        format="webp"
+      />
+    </section>
+
+    <section class="info">
+      <section>
+        <h3 class="info__label">Designer</h3>
+        { teamMembers.map(( person ) => (
+          <a href={ `/people/${ person.slug }` }>
+            <p class="info__paragraph">{ person.data.name } ({ person.data.pronouns })</p>
+          </a>
+        ))}
+      </section>
+      <section>
+        <h3 class="info__label">Project Overview</h3>
+        <p class="info__paragraph">{ entry.data.listingDescription }</p>
+      </section>
+      <section>
+        <h3 class="info__label">Instructor</h3>
+        <p class="info__paragraph">{ entry.data.instructor }</p>
+      </section>
+    </section>
+
+    <section class="gallery">
+      <!-- Display all images in the media/{project}/gallery folder -->
+      { projectGalleryImages.map(( item ) => (
+        <Image
+          data-action="zoom"
+          class="gallery__image"
+          src={ projectImages[ item ]() }
+          alt={ `Image for the IxD project ${ entry.data.title }` }
+          width="1440"
+          format="webp"
+        />
+      ))}
+    </section>
+
+    <section class="designer-card">
+      <div class="designer-card__info">
+        <h3 class="designer-card__label">Meet the Designer</h3>
+        <p class="designer-card__paragraph">{ teamMembers[0].body }</p>
+        <a class="designer-card__website-link" href={ `https://${ teamMembers[0].data.website } `} target="_blank">View Website</a>
+        <a class="designer-card__profile-link" href={ `/people/${ teamMembers[0].slug } `}>More about me</a>
+      </div>
+
+      <Image 
+        class="designer-card__profile-pic"
+        src={ peopleImages[ teamMembers[0].data.image ]() }
+        alt={`A photo of ${ teamMembers[0].data.name }`}
+        width="1440"
+        format="webp"
+      />
+    </section>
+
+    <section class="more-projects">
+      <h3 class="more-projects__heading">View more projects</h3>
+      <section class="more-projects__projects">
+        { moreProjects.map(( project ) => (
+          <ProjectCard 
+            slug={ project.slug }
+            title={ project.data.title } 
+            designer={ project.data.peopleList }
+            imageSrc={ project.data.listingImage } 
+          />
+        ))}
+      </section>
+    </section>
+  </main>
+</Layout>
+
+<style lang="scss">
+  @import "../../../styles/type.scss";
+
+  main.content {
+    padding: 0 var(--spacing-page_gutter);
+    & > section {
+      margin-bottom: var(--spacing-xxlarge);
+    }
+  }
+
+  .intro {
+    &__title {
+      @include type-title;
+      width: fit-content;
+    }
+    &__hero {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    &__label {
+      @include type-label;
+    }
+    &__paragraph {
+      @include type-intro;
+    }
+  }
+
+  .gallery {
+    columns: 2;
+    gap: var(--spacing-medium);
+
+    &__image {
+      width: 100%;
+      height: auto;
+      margin-bottom: var(--spacing-medium);
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .designer-card {
+    background-color: #F5F5F5;
+    padding: 70px 65px;
+    display: flex;
+    flex-direction: row;
+    gap: 100px;
+
+    &__info {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    &__label {
+      @include type-label;
+      margin: 0;
+    }
+    &__paragraph {
+      @include type-intro;
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+    }
+    &__profile-pic {
+      width: 300px;
+      height: fit-content;
+      object-fit: contain;
+      border-radius: 6px;
+      margin: auto;
+    }
+    &__website-link {
+      @include type-cta;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      width: fit-content;
+      border: 3px solid #000000;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #000000;
+      padding: 14px 40px;
+    }
+    &__profile-link {
+      @include type-cta;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      width: fit-content;
+      border: 3px solid #000000;
+      border-radius: 6px;
+      background: #000000;
+      color: #ffffff;
+      padding: 14px 40px;
+    }
+  }
+
+  .more-projects {
+    &__heading {
+      @include type-heading;
+    }
+    &__projects {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+  }
+</style>

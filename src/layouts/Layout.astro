@@ -1,0 +1,179 @@
+---
+interface Props {
+	title: string;
+}
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { ViewTransitions } from 'astro:transitions';
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link  href="../../node_modules/zoom-vanilla.js/dist/zoom.css" rel="stylesheet" />
+    <script src="../../node_modules/zoom-vanilla.js/dist/zoom-vanilla.min.js"></script>
+
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+    <Header />
+		<slot />
+    <Footer />
+	</body>
+</html>
+
+<style is:global>
+  /* Font files */
+  @font-face {
+    font-family: "Raleway";
+    font-style: normal;
+    font-weight: 400;
+    src: url("fonts/Raleway-VariableFont_wght.ttf") format("ttf");
+  }
+  @font-face {
+    font-family: "Raleway";
+    font-style: italic;
+    font-weight: 400;
+    src: url("fonts/Raleway-Italic-VariableFont_wght.ttf") format("ttf");
+  }
+
+	:root {
+		--accent: 136, 58, 234;
+		--accent-light: 224, 204, 250;
+		--accent-dark: 49, 10, 101;
+		--accent-gradient: linear-gradient(
+			45deg,
+			rgb(var(--accent)),
+			rgb(var(--accent-light)) 30%,
+			white 60%
+		);
+
+    /* Color */
+    --color-black: #000000;
+    --color-white: #ffffff;
+    --color-orange: #FE9920;
+    --color-light_gray: #8B8B8B;
+    --color-dark_gray: #656565;
+
+    --color-surface-primary-background: var(--color-white);
+    --color-surface-primary-text: var(--color-black);
+    --color-surface-primary-cta: var(--color-orange);
+    --color-surface-primary-subheading: var(--color-dark_gray);
+
+    /* Font Size */
+    --font_size-display: 50px;
+    --font_size-title: 32px;
+    --font_size-heading: 24px;
+    --font_size-subheading: 20px;
+    --font_size-paragraph: 16px;
+    --font_size-detail: 12px;
+
+    /* Spacing */
+    --spacing-xxsmall: 5px;
+    --spacing-xsmall: 15px;
+    --spacing-small: 25px;
+    --spacing-medium: 40px;
+    --spacing-large: 80px;
+    --spacing-xlarge: 110px;
+    --spacing-xxlarge: 140px;
+    --spacing-xxxlarge: 200px;
+
+    --spacing-page_gutter: var(--spacing-xsmall, 15px);
+	}
+
+  /* Mobile */
+  @media screen and (min-width: 414px) and (max-width: 767px) {
+    :root {
+      --spacing-page_gutter: var(--spacing-medium);
+    }
+  }
+
+  /* Tablet */
+  @media screen and (min-width: 768px) and (max-width: 1439px) {
+    :root {
+      --spacing-page_gutter: var(--spacing-xxlarge);
+    }
+  }
+
+  /* Laptop */
+  @media screen and (min-width: 1440px) and (max-width: 2559px) {
+    :root {
+      --spacing-page_gutter: var(--spacing-xxxlarge);
+    }
+  }
+
+  /* Desktop */
+  @media screen and (min-width: 2560px) {
+    :root {
+      --spacing-page_gutter: var(--spacing-xxxlarge);
+    }
+  }
+
+
+
+  /* Resets */
+	html {
+		font-family: system-ui, sans-serif;
+    background: var(--color-surface-primary-background, #ffffff);
+		background-size: 224px;
+	}
+  body {
+    margin: 0;
+    padding: 0;
+  }
+	code {
+		font-family:
+			Menlo,
+			Monaco,
+			Lucida Console,
+			Liberation Mono,
+			DejaVu Sans Mono,
+			Bitstream Vera Sans Mono,
+			Courier New,
+			monospace;
+	}
+  a {
+    text-decoration: auto;
+  }
+  h1, h2, h3, h4, h5, h6, p, ol, ul, li {
+    margin: 0;
+    padding: 0;
+  }
+
+
+
+  /* Class mixins */
+  .rich-text {
+    h1 {
+      font-size: 300px;
+    }
+    h2 {
+      font-family: Raleway;
+      font-weight: 700;
+      font-size: 26px;
+      color: var(--color-surface-primary-text);
+      margin-bottom: var(--spacing-medium);
+    }
+    p {
+      font-family: Raleway;
+      font-weight: 400;
+      font-size: 16px;
+      color: var(--color-surface-primary-text);
+    }
+  }
+  .type-intro {
+    font-family: Raleway;
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--color-surface-primary-subheading);
+  }
+</style>

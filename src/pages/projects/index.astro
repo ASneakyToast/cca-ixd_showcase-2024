@@ -1,0 +1,85 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, getEntry, getEntries } from "astro:content";
+import Layout from "../../layouts/layout.astro";
+import ProjectCard from "../../components/project-card.astro";
+
+// get all projects from "src/content/projects/"
+const allProjects = await getCollection( "projects" );
+
+// seralize people list for projects
+for ( const project of allProjects ) {
+  const peopleList = await getEntries( project.data.people );
+  if ( project.data.people.length > 1 ) {
+    project.data.peopleList = peopleList.map(( item ) => {
+      return item.data.name;
+    }).join(", ");
+  } else {
+    project.data.peopleList = peopleList[0].data.name;
+  }
+}
+
+// For astro js processed images
+const projectImages = import.meta.glob( "/src/media/projects/*/*.{jpeg,jpg,png,gif}" );
+
+---
+<Layout title="CCA | 2023 IxD Showcase | Projects">
+  <main class="content">
+    <section class="intro">
+      <h1 class="intro__title">Design projects</h1>
+      <h2>We imagine the future of mobile experiences, social networks, products and services, and complex systems while keeping equity, inclusivity, and sustainability at the forefront of design.</h2>
+    </section>
+
+    <section class="project-index">
+      { allProjects.map(( project ) => (
+        <ProjectCard
+          slug={ project.slug }
+          title={ project.data.title }
+          designer={ project.data.peopleList }
+          imageSrc={ project.data.listingImage }
+        />
+      ))}
+    </section>
+  </main>
+</Layout>
+
+<style lang="scss">
+  @import "../../styles/type.scss";
+
+  main.content {
+    padding: 0 var(--spacing-page_gutter);
+    margin: var(--spacing-large) 0;
+
+    h1 {
+      @include type-heading;
+    }
+    h2 {
+      @include type-intro--home;
+    }
+
+    & > section {
+      margin-bottom: 48px; 
+    }
+  }
+
+  .project-index {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 60px;
+  }
+
+  .project-card {
+    &__image {
+      width: 100%;
+      height: auto;
+      margin-bottom: 30px;
+    }
+    &__title {
+      @include type-card-heading;
+    }
+    &__team {
+      @include-type-card-label;
+    }
+  }
+</style>
+

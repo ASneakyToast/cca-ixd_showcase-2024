@@ -1,0 +1,20 @@
+{
+  "name": "ixd-showcase-2024",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "animejs": "^3.2.2",
+    "astro": "^4.2.6",
+    "zoom-vanilla.js": "^2.0.6"
+  },
+  "devDependencies": {
+    "sass": "^1.71.1"
+  }
+}

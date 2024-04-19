@@ -1,0 +1,44 @@
+---
+import { Image } from "astro:assets";
+const { title, designer, imageSrc, slug } = Astro.props;
+
+// For astro js processed images
+const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif}");
+---
+
+<a class="project" href={`/projects/${ slug }/`}>
+  <Image
+    src={ projectImages[ imageSrc ]() }
+    alt="Alt text needs an upgrade"
+    width="780"
+    format="webp"
+  />
+  <h3 class="project__title">{ title }</h3>
+  <p class="project__team">{ designer }</p>
+</a>
+
+<style lang="scss">
+  .project {
+    &__title {
+      color: #000000;
+      text-decoration: none;
+      font-family: "Raleway";
+      font-weight: 600;
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+    &__team {
+      color: #222222;
+      text-decoration: underline;
+      text-decoration-color: #222222;
+      font-family: "Raleway";
+      font-weight: 700;
+      font-size: 20px;
+    }
+    img {
+      width: 100%;
+      height: auto;
+      margin-bottom: 30px;
+    }
+  }
+</style>
