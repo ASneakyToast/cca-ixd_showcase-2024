@@ -1,10 +1,18 @@
 ---
+# primary arguments
 title: String,
-listing-description: String,
-listing-image: "/path/to/image.jpg"
-team-member:
+listingImage: "listing-image.jpg"
+
+# references
+people:
 - name-as-slug-1
 - name-as-slug-2
+
+# secondary arguments
+instructor: String
+listingDescription: String
+
+# tertiary arguments
 tags:
 - "tag 1"
 - "tag 2"

@@ -20,21 +20,40 @@ const { Content } = await entry.render();
 
 // 2.2 Resolve references in the schema
 const teamMembers = await getEntries( entry.data.people );
+const projects = await getCollection( "projects", ({ data }) => {
+  return data.draft !== true;
+});
 
 // For astro js processed images
-const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif}");
-const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" );
+const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif,heic}");
+const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif,heic}" );
 
+/* Not doing file based routing for gallery */
+/* > instead calling out filenames in content file */
+/*
 let projectGalleryImages = [];
 for (const [key, value] of Object.entries( projectImages )) {
   if ( key.includes(`/${ entry.slug }/gallery/`) ) {
     projectGalleryImages.push( key ); 
   }
 }
+*/
+console.log( "new gallery testing" );
+console.log( entry.data.imageGallery );
+
+// seralize people list for projects
+for ( const project of projects ) {
+  const peopleList = await getEntries( project.data.people );
+  if ( project.data.people.length > 1 ) {
+    project.data.peopleList = peopleList.map(( item ) => {
+      return item.data.name;
+    }).join(", ");
+  } else {
+    project.data.peopleList = peopleList[0].data.name;
+  }
+}
 
 // MORE PROJECTS
-const projects = await getCollection('projects');
-
 // > remove current project from list
 const currentUrl = Astro.url.pathname;
 for (const [i, project] of projects.entries()) {
@@ -45,22 +64,33 @@ for (const [i, project] of projects.entries()) {
 
 // > shuffle project list and grab first 4
 let shuffledProjects = projects.sort(() => 0.5 - Math.random());
-shuffledProjects.slice(0, 4);
+shuffledProjects = shuffledProjects.slice(0, 4);
 
+// > return moreProjects
 const moreProjects = shuffledProjects;
+
+
+
+console.log( "testing things now" );
+console.log( entry );
+console.log( Content );
 ---
 
 <Layout title="Project title">
   <main class="content">
     <section class="intro">
       <h1 class="intro__title">{ entry.data.title }</h1>
-      <Image
-        class="intro__hero"
-        src={ projectImages[ entry.data.listingImage ]() }
-        alt={ `The hero image for ${ entry.data.title }`}
-        width="1440"
-        format="webp"
-      />
+      { entry.data.projectVideoUrl ? (
+        <iframe class="intro__video" width="100%" height="auto" src={ entry.data.projectVideoUrl } title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      ) : (
+        <Image
+          class="intro__hero"
+          src={ projectImages[ `/src/media/projects/${ entry.slug }/${ entry.data.listingImage }` ]() }
+          alt={ `The hero image for ${ entry.data.title }`}
+          width="1440"
+          format="webp"
+        />
+      )}
     </section>
 
     <section class="info">
@@ -68,27 +98,33 @@ const moreProjects = shuffledProjects;
         <h3 class="info__label">Designer</h3>
         { teamMembers.map(( person ) => (
           <a href={ `/people/${ person.slug }` }>
-            <p class="info__paragraph">{ person.data.name } ({ person.data.pronouns })</p>
+            <p class="info__paragraph">{ person.data.name }</p>
           </a>
         ))}
       </section>
+
+      { entry.data.instructor && (
+        <section>
+          <h3 class="info__label">Instructor</h3>
+          <p class="info__paragraph">{ entry.data.instructor }</p>
+        </section>
+      )}
+
       <section>
         <h3 class="info__label">Project Overview</h3>
-        <p class="info__paragraph">{ entry.data.listingDescription }</p>
-      </section>
-      <section>
-        <h3 class="info__label">Instructor</h3>
-        <p class="info__paragraph">{ entry.data.instructor }</p>
+        <div class="info__paragraph">
+          <!--<Content />-->
+          <p>{ entry.data.listingDescription }</p>
+        </div>
       </section>
     </section>
 
     <section class="gallery">
-      <!-- Display all images in the media/{project}/gallery folder -->
-      { projectGalleryImages.map(( item ) => (
+      { entry.data.imageGallery.map(( item ) => (
         <Image
           data-action="zoom"
           class="gallery__image"
-          src={ projectImages[ item ]() }
+          src={ projectImages[ `/src/media/projects/${ entry.slug }/${ item }` ]() }
           alt={ `Image for the IxD project ${ entry.data.title }` }
           width="1440"
           format="webp"
@@ -147,6 +183,9 @@ const moreProjects = shuffledProjects;
     &__hero {
       width: 100%;
       height: auto;
+    }
+    &__video {
+      aspect-ratio: 16/9;
     }
   }
 

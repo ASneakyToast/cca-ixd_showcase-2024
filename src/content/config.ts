@@ -15,27 +15,55 @@ import { defineCollection, reference, z } from "astro:content";
 const peopleCollection = defineCollection({
   type: "content",
   schema: z.object({
+    // core arguments
     name: z.string(),
-    hometown: z.string().optional(),
-    pronouns: z.string(),
-    likes: z.array(z.string()),
+    pronouns: z.string().optional(),
+    program: z.string(),
+    graduationYear: z.number(),
+
+    // references
+    projects: z.array(reference("projects")).optional(),
+
+    // secondary arguments
     image: z.string().optional(),
-    projects: z.array(reference("projects")),
     website: z.string().optional(),
+    linkedIn: z.string().optional(),
+
+    // tertiary arguments
+    hometown: z.string().optional(),
+    hobbies: z.string().optional(),
+    funFact: z.string().optional(),
+
+    // base arguments
+    draft: z.boolean().optional(),
   }),
 });
 
 const projectCollection = defineCollection({
   type: "content",
   schema: z.object({
+    // core arguments
     title: z.string(),
-    listingDescription: z.string(),
     listingImage: z.string(),
+
+    // references
     people: z.array(reference("people")),
-    tags: z.array(z.string()),
+
+    // secondary arguments
     instructor: z.string().optional(),
+    listingDescription: z.string().optional(),
+    imageGallery: z.array(z.string()).optional(),
+
+    // tertiary arguments
+    tags: z.array(z.string()).optional(),
+    projectVideo: z.string().optional(),
+    projectVideoUrl: z.string().optional(),
+
+    // base arguments
+    draft: z.boolean().optional(),
   }),
 });
+
 
 
 

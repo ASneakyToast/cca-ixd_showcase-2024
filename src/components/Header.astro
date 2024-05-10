@@ -3,7 +3,9 @@ import { getCollection, getEntries } from "astro:content";
 import shuffleIcon from "../media/svgs/shuffle-icon.svg?raw";
 
 // For content
-const projectsEntries = await getCollection('projects');
+const projectsEntries = await getCollection( "projects", ({ data }) => {
+  return data.draft !== true;
+});
 
 // For astro js processed images
 const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif}");

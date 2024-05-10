@@ -15,9 +15,6 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-// 2.2 Resolve references in the schema
-const projects = await getEntries( entry.data.projects );
-
 // For astro js processed images
 const people_images = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" );
 ---
@@ -25,9 +22,11 @@ const people_images = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}"
 <Layout title="Page title">
   <main class="content">
     <section class="intro">
-      <h1 class="intro__title">{ entry.data.name } ({ entry.data.pronouns })</h1>
-      <p class="intro__subheading">{ entry.data.pronouns }</p>
-      <p class="intro__subheading">Interaction Design</p>
+      <h1 class="intro__title">{ entry.data.name }</h1>
+      { entry.data.pronouns && (
+        <p class="intro__subheading">{ entry.data.pronouns }</p>
+      )}
+      <p class="intro__subheading">{ entry.data.program }, { entry.data.graduationYear }</p>
     </section>
 
     <section class="sticky-body">
@@ -40,27 +39,30 @@ const people_images = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}"
       />
 
       <section class="info">
-        <a class="info__website" href={` https://${ entry.data.website } `}>View website</a>
-        <a class="info__linkedin" href="idk/in/public/I/guess/or/not/acutlaly">LinkedIn</a>
+        { entry.data.website && (
+          <a class="info__website" href={` https://${ entry.data.website } `}>View website</a>
+        )}
+
+        { entry.data.linkedIn && (
+          <a class="info__linkedin" href="idk/in/public/I/guess/or/not/acutlaly">LinkedIn</a>
+        )}
 
         <Content />
 
-        <h2>Hometown</h2>
-        <p>{ entry.data.hometown }</p>
+        { entry.data.hometown && (
+          <h2>Hometown</h2>
+          <p>{ entry.data.hometown }</p>
+        )}
 
-        <h2>Hobbies</h2>
-        <ul class="intro__hobbies">
-          { entry.data.likes.map(( item ) => (
-            <li>{ item }</li>
-          ))}
-        </ul>
+        { entry.data.hobbies && (
+          <h2>Hobbies</h2>
+          <p class="intro__hobbies">{ entry.data.hobbies }</p>
+        )}
 
-        <h2>Fun fact</h2>
-        <ul class="intro__hobbies">
-          { entry.data.likes.map(( item ) => (
-            <li>{ item }</li>
-          ))}
-        </ul>
+        { entry.data.funFact && (
+          <h2>Fun fact</h2>
+          <p class="intro__fun-fact">{ entry.data.funFact }</p>
+        )}
       </section>
     </section>
   </main>

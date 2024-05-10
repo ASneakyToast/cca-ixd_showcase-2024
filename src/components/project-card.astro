@@ -1,18 +1,35 @@
 ---
 import { Image } from "astro:assets";
+//import placeholderImage from "../media/placeholder-image.jpg";
+import brokenLinkImage from "../media/brokenlink-image.png";
+
 const { title, designer, imageSrc, slug } = Astro.props;
 
 // For astro js processed images
-const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif}");
+const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif,heic}");
+
+let imageSrcWithProjectPath = `/src/media/projects/${ slug }/${ imageSrc }`;
+let processedImage = projectImages[ imageSrcWithProjectPath ];
 ---
 
 <a class="project" href={`/projects/${ slug }/`}>
-  <Image
-    src={ projectImages[ imageSrc ]() }
-    alt="Alt text needs an upgrade"
-    width="780"
-    format="webp"
-  />
+  <!-- use broken link image if not found -->
+  { typeof processedImage !== "undefined" ? (
+    <Image
+      src={ projectImages[ imageSrcWithProjectPath ]() }
+      alt={`Image of ${ designer }s project ${ title }` }
+      width="1440"
+      format="webp"
+    />
+  ) : (
+    <Image
+      src={ brokenLinkImage }
+      alt={`Image of ${ designer }s project ${ title }` }
+      width="1440"
+      format="webp"
+    />
+  )}
+    
   <h3 class="project__title">{ title }</h3>
   <p class="project__team">{ designer }</p>
 </a>

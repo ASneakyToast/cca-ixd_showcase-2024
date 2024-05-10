@@ -1,9 +1,21 @@
 ---
+import { Image } from "astro:assets";
+import ccaLogo from "../media/cca-lockup.svg"
 ---
+
 <section class="footer">
   <div class="footer__content">
-    <p class="footer__label">Digital IXD Senior Showcase</p>
-    <p class="footer__body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Orci sit ultrices dui a purus. Quam adipiscing</p>
+    <a href="https://cca.edu" target="_blank">
+      <Image 
+        class="footer__logo"
+        src={ ccaLogo }
+        alt="CCA Logo"
+        width="350"
+        format="webp"
+      />
+    </a>
+    <p class="footer__label">CCA IXD Senior Showcase 2024</p>
+    <p class="footer__body">©2024, California College of the Arts, unless otherwise noted</p>
 
     <hr />
 
@@ -28,6 +40,12 @@
 
     & hr {
       margin: 32px 0;
+    }
+
+    &__logo {
+      width: 300px;
+      height: auto;
+      margin-bottom: 25px;
     }
 
     &__label {
