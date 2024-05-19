@@ -16,5 +16,5 @@ tags:
 - "Environmental Education"
 - "AR"
 
-draft: true
+draft: true # no media for this one
 ---

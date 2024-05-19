@@ -11,8 +11,8 @@ projects:
 
 # secondary arguments
 image: "/src/media/people/placeholder.jpg"
-website: "www.tonybaek.design"
-linkedIn: "www.linkedin.com/in/tony-baek"
+website: "https://www.tonybaek.design"
+linkedIn: "https://www.linkedin.com/in/tony-baek"
 
 # tertiary arguments
 hometown: "Seoul, Korea"

@@ -6,8 +6,8 @@ program: BFA Interaction Design
 graduationYear: 2024
 
 # references
-# projects:
-# - wave-watch
+projects:
+- wave-watch
 
 # secondary arguments
 image: "/src/media/people/placeholder.jpg"

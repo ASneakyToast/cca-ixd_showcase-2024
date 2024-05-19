@@ -28,5 +28,5 @@ tags:
 - "UI/UX"
 - "Racing companion app"
 projectVideo: "Zhuofan_Yuan_Thumbnail_RacingControl.jpg"
-projectVideoUrl: "https://www.youtube.com/embed/xpvjPsme8_k?si=Xj8BBexlWdvzWpgX"
+projectVideoUrl: "https://www.youtube.com/embed/WyZtgfUdyYI?si=MMlgVzydKQz0W5_6"
 ---

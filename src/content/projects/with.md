@@ -3,7 +3,7 @@ title: "WITH"
 listingImage: "hero-image.jpg"
 
 people:
-- yitong-wong
+- yitong-wang
 
 instructor: "Alex Baumgardt"
 listingDescription: "WITH is a network with that utilizes real-time crowd-sourced information to help female traveler walk confidently in a new city."

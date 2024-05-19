@@ -10,7 +10,7 @@ projects:
 - realmwalker
 
 # secondary arguments
-image: "/src/media/people/yitong-wang.jpg"
+image: "/src/media/people/placeholder.jpg"
 #website: "https://www.yitong-design.com/"
 #linkedIn: "linkedin.com/in/yitong"
 

@@ -4,13 +4,16 @@ import { getCollection, getEntry, getEntries } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 
 // get all people from "src/content/people/"
-const allPeople = await getCollection( "people" );
+const allPeople = await getCollection( "people", ({ data }) => {
+  return data.draft != true;
+});
 
 // For astro js processed images
 import classPhoto from "/src/media/group-photo.png";
+import placeholderImage from "/src/media/placeholder-image.jpg";
 const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" );
-
 ---
+
 <Layout title="CCA | 2023 IxD Showcase | People">
   <main class="content">
     <section class="intro">
@@ -29,13 +32,23 @@ const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" 
       { allPeople.map(( person ) => (
         <a href={ `/people/${ person.slug }` }>
           <article class="designer-card">
-            <Image
-              src={ peopleImages[ person.data.image ]() }
-              alt="Alt text needs an upgrade"
-              width="780"
-              format="webp"
-              class="designer-card__image"
-            />
+            { person.data.image ? (
+              <Image
+                src={ peopleImages[ person.data.image ]() }
+                alt="Alt text needs an upgrade"
+                width="780"
+                format="webp"
+                class="designer-card__image"
+              />
+            ):(
+              <Image
+                src= { placeholderImage }
+                alt="Alt text needs an upgrade"
+                width="780"
+                format="webp"
+                class="designer-card__image"
+              />
+            )}
             <h3 class="designer-card__name">{ person.data.name }</h3>
           </article>
         </a>

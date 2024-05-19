@@ -21,4 +21,5 @@ imageGallery:
 # tertiary arguments
 tags:
 - "Outdoor, Surf"
+projectVideoUrl: "https://www.youtube.com/embed/gCn_nhbcbdM?si=MCU-sIwP4SAu4UJB"
 ---

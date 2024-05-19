@@ -21,4 +21,8 @@ imageGallery:
 tags:
 - "UX/UX"
 - "Car"
+projectVideoUrl: "https://www.youtube.com/embed/4Od__FUa2-Y?si=IJ4hW41FENtM4Zc8"
+
+# base arguments
+draft: false
 ---

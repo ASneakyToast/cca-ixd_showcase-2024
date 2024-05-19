@@ -23,6 +23,8 @@ for ( const project of projects ) {
 
 // For astro js processed images
 import heroImage from "/src/media/hero-image.png";
+import heroBackground from "/src/media/hero-background.png";
+import heroTitle from "/src/media/hero-title.png";
 import classPhoto from "/src/media/group-photo.png";
 const projectImages = import.meta.glob( "/src/media/projects/**/*.{jpeg,jpg,png,gif}" );
 const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" );
@@ -30,11 +32,22 @@ const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" 
 
 <Layout title="2024 IxD Showcase">
 	<main>
+    <!--
     <section class="hero">
       <Image 
         class="hero__image"
         src={ heroImage }
         alt="Hero image alt text"
+        width="2560"
+        format="webp"
+      />
+    </section>
+    -->
+    <section class="hero-new" style={`background-image: url(${ heroBackground.src });`}>
+      <Image
+        class="hero-new__text"
+        src={ heroTitle }
+        alt="CCA IxD Showcase 2024"
         width="2560"
         format="webp"
       />
@@ -78,10 +91,22 @@ const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" 
 <style lang="scss">
   @import "../styles/type.scss";
 
-  .hero {
+  .hero-new {
     position: relative;
     text-align: center;
-    margin: 64px 0;
+    margin: 0 0 64px;
+
+    background-size: cover;
+    &__text {
+      width: auto;
+      height: 95vh;
+      max-width: 100%;
+      max-height: 95vh;
+      padding: 80px var(--spacing-page_gutter);
+      box-sizing: border-box;
+      object-fit: contain;
+    }
+
     &__image {
       max-width: 100%;
       max-height: 80vh;
@@ -115,23 +140,13 @@ const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" 
   }
 
   .projects {
+    /*
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-large) var(--spacing-small);
-  }
-
-  .project {
-    &__title {
-      @include type-card-heading;
-    }
-    &__team {
-      @include type-card-label;
-    }
-    img {
-      width: 100%;
-      height: auto;
-      margin-bottom: 30px;
-    }
+    */
+    columns: 2; 
+    gap: 32px;
   }
 
   .class-photo {

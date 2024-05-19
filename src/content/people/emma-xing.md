@@ -11,7 +11,7 @@ projects:
 # secondary arguments
 image: "/src/media/people/placeholder.jpg"
 website: "http://emmaxing.com"
-linkedIn: "www.linkedin.com/in/emma-xing"
+linkedIn: "https://linkedin.com/in/emma-xing"
 
 # tertiary arguments
 hobbies: "Travelling, tennis"

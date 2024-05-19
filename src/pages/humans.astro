@@ -1,0 +1,46 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, getEntry, getEntries } from "astro:content";
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="CCA | 2023 IxD Showcase | People">
+  <main class="content">
+    <p class="intro">This website was created by a collaboration at <a href="https://cca.edu" target="_blank">California College of the Arts</a> between an IxD class taught by <a href="https://portal.cca.edu/people/gplumb/" target="_blank">Graham S Plumb</a> and the Marketing and Communications team. It was designed by <a href="/people/yitong-wang">Yitong Wang</a> and developed by <a href="https://portal.cca.edu/people/jlithgow/" target="_blank">Joel Lithgow</a>.</p>
+    <a class="link" href="mailto:joelnotlithgow@gmail.com">Contact the website administrator</a>
+  </main>
+</Layout>
+
+<style lang="scss">
+  @import "../styles/type.scss";
+
+  main.content {
+    padding: 0 var(--spacing-page_gutter);
+    margin: var(--spacing-large) 0;
+
+    .intro {
+      font-family: Raleway;
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 170%;
+
+      margin-bottom: 40px;
+
+      color: var(--color-surface-primary-text);
+    }
+    .link {
+      font-family: Raleway;
+      font-weight: 700;
+      font-size: 20px;
+
+      text-decoration: none;
+
+      transition: color 140ms;
+      color: #222222;
+      &:hover {
+        color: #000000;
+      text-decoration: underline;
+      }
+    }
+  }
+</style>

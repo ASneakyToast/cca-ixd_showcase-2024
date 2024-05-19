@@ -11,7 +11,7 @@ projects:
 # secondary arguments
 image: "/src/media/people/placeholder.jpg"
 website: "https://www.uxdesignbysungah.com/"
-linkedIn: "www.linkedin.com/in/sungah-stella-kim"
+linkedIn: "https://linkedin.com/in/sungah-stella-kim"
 
 # tertiary arguments
 hobbies: "Lego, music, travel"

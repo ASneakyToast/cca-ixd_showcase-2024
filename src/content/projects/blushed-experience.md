@@ -23,4 +23,5 @@ imageGallery:
 # tertiary arguments
 tags:
 - "Immersive experience"
+projectVideoUrl: "https://www.youtube.com/embed/aVCvjsqIlQM?si=H36yGf32y8Lx3zdL"
 ---

@@ -1,11 +1,15 @@
 ---
 import { Image } from "astro:assets";
-import { getCollection, getEntries } from "astro:content";
+import { getCollection, getEntries, getEntry } from "astro:content";
 import Layout from "../../../layouts/Layout.astro";
+import placeholderImage from "/src/media/placeholder-image.jpg";
 
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
-  const peopleEntries = await getCollection('people');
+  const peopleEntries = await getCollection('people', ({ data }) => {
+    return data.draft != true;
+  });
+
   return peopleEntries.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
   }));
@@ -15,12 +19,19 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
+// 2.2 Resolve references in the schema
+
 // For astro js processed images
-const people_images = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" );
+const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}" );
+const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif,heic}");
+
+// For astro js content refrences
+const featuredProject = await getEntry( entry.data.projects[0].collection, entry.data.projects[0].slug);
 ---
 
 <Layout title="Page title">
   <main class="content">
+
     <section class="intro">
       <h1 class="intro__title">{ entry.data.name }</h1>
       { entry.data.pronouns && (
@@ -30,41 +41,69 @@ const people_images = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}"
     </section>
 
     <section class="sticky-body">
-      <Image 
-        class="intro__headshot"
-        src={ people_images[ entry.data.image ]() }
-        alt={`A photo of ${ entry.data.name }`}
-        width="1440"
-        format="webp"
-      />
+      { entry.data.image ? (
+        <Image 
+          class="intro__headshot"
+          src={ peopleImages[ entry.data.image ]() }
+          alt={`A photo of ${ entry.data.name }`}
+          width="1440"
+          format="webp"
+        />
+      ):(
+        <Image 
+          class="intro__headshot"
+          src={ placeholderImage }
+          alt={`A photo of ${ entry.data.name }`}
+          width="1440"
+          format="webp"
+        />
+      )}
 
       <section class="info">
         { entry.data.website && (
-          <a class="info__website" href={` https://${ entry.data.website } `}>View website</a>
+          <a class="info__website" target="_blank" href={` ${ entry.data.website } `}>View website</a>
         )}
 
         { entry.data.linkedIn && (
-          <a class="info__linkedin" href="idk/in/public/I/guess/or/not/acutlaly">LinkedIn</a>
+          <a class="info__linkedin" target="_blank" href={` ${ entry.data.linkedIn } `}>LinkedIn</a>
         )}
 
         <Content />
 
         { entry.data.hometown && (
-          <h2>Hometown</h2>
+          <h3>Hometown</h3>
           <p>{ entry.data.hometown }</p>
         )}
 
         { entry.data.hobbies && (
-          <h2>Hobbies</h2>
+          <h3>Hobbies</h3>
           <p class="intro__hobbies">{ entry.data.hobbies }</p>
         )}
 
         { entry.data.funFact && (
-          <h2>Fun fact</h2>
+          <h3>Fun fact</h3>
           <p class="intro__fun-fact">{ entry.data.funFact }</p>
         )}
       </section>
     </section>
+
+    <section class="thesis-project">
+      <h2>Thesis</h2>
+      <div class="lf-row-spaced_even">
+        <h3>{ featuredProject.data.title }</h3>
+        <a class="thesis-project__button" href={ `/projects/${ featuredProject.slug }` }>View project</a>
+      </div>
+      <a href={ `/projects/${ featuredProject.slug }/`}>
+        <Image 
+          class="thesis-project__thumbnail"
+          src={ projectImages[ `/src/media/projects/${ featuredProject.slug }/${ featuredProject.data.listingImage }` ]() }
+          alt={`An image of the project: ${ featuredProject.data.title }`}
+          width="1440"
+          format="webp"
+        />
+      </a>
+    </section>
+
   </main>
 </Layout>
 
@@ -86,6 +125,13 @@ const people_images = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}"
 
 <style lang="scss">
   @import "../../../styles/type.scss";
+
+  .lf-row-spaced_even {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 
   main.content {
     padding: 0 var(--spacing-page_gutter);
@@ -116,6 +162,40 @@ const people_images = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif}"
       font-size: 24px;
       font-weight: 700;
       color: #8B8B8B;
+    }
+  }
+
+  .thesis-project {
+    margin-top: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+
+    & img {
+      width: 100%;
+      height: auto;
+    }
+
+    & h2, h3 {
+      @include type-heading;
+      margin: 0;
+    }
+
+    &__button {
+      padding: 14px 40px;
+      background-color: #222222;
+      border-radius: 6px;
+      color: white;
+
+      @include type-nav-button;
+
+      margin-left: 40px;
+
+      transition: background-color 200ms;
+      &:hover {
+        background-color: #000000;
+        color: white;
+      }
     }
   }
 

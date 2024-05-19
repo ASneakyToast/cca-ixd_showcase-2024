@@ -25,8 +25,8 @@ const projects = await getCollection( "projects", ({ data }) => {
 });
 
 // For astro js processed images
-const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif,heic}");
 const peopleImages = import.meta.glob( "/src/media/people/*.{jpeg,jpg,png,gif,heic}" );
+const projectImages = import.meta.glob("/src/media/projects/**/*.{jpeg,jpg,png,gif,heic}");
 
 /* Not doing file based routing for gallery */
 /* > instead calling out filenames in content file */
@@ -38,8 +38,6 @@ for (const [key, value] of Object.entries( projectImages )) {
   }
 }
 */
-console.log( "new gallery testing" );
-console.log( entry.data.imageGallery );
 
 // seralize people list for projects
 for ( const project of projects ) {
@@ -68,12 +66,6 @@ shuffledProjects = shuffledProjects.slice(0, 4);
 
 // > return moreProjects
 const moreProjects = shuffledProjects;
-
-
-
-console.log( "testing things now" );
-console.log( entry );
-console.log( Content );
 ---
 
 <Layout title="Project title">
@@ -110,34 +102,47 @@ console.log( Content );
         </section>
       )}
 
-      <section>
-        <h3 class="info__label">Project Overview</h3>
-        <div class="info__paragraph">
-          <!--<Content />-->
-          <p>{ entry.data.listingDescription }</p>
-        </div>
-      </section>
+      { entry.data.listingDescription && (
+        <section>
+          <h3 class="info__label">Project Overview</h3>
+          <div class="info__paragraph">
+            <!--<Content />-->
+            <p>{ entry.data.listingDescription }</p>
+          </div>
+        </section>
+      )}
     </section>
 
-    <section class="gallery">
-      { entry.data.imageGallery.map(( item ) => (
-        <Image
-          data-action="zoom"
-          class="gallery__image"
-          src={ projectImages[ `/src/media/projects/${ entry.slug }/${ item }` ]() }
-          alt={ `Image for the IxD project ${ entry.data.title }` }
-          width="1440"
-          format="webp"
-        />
-      ))}
-    </section>
+    { entry.data.imageGallery !== undefined && (
+      <section class="gallery">
+        { entry.data.imageGallery.map(( item ) => (
+          <Image
+            data-action="zoom"
+            class="gallery__image"
+            src={ projectImages[ `/src/media/projects/${ entry.slug }/${ item }` ]() }
+            alt={ `Image for the IxD project ${ entry.data.title }` }
+            width="1440"
+            format="webp"
+          />
+        ))}
+      </section>
+    )}
 
     <section class="designer-card">
       <div class="designer-card__info">
-        <h3 class="designer-card__label">Meet the Designer</h3>
-        <p class="designer-card__paragraph">{ teamMembers[0].body }</p>
-        <a class="designer-card__website-link" href={ `https://${ teamMembers[0].data.website } `} target="_blank">View Website</a>
-        <a class="designer-card__profile-link" href={ `/people/${ teamMembers[0].slug } `}>More about me</a>
+        <div>
+          <h3 class="designer-card__label">Meet the Designer</h3>
+          <p class="designer-card__paragraph">{ teamMembers[0].data.name }</p>
+        </div>
+        <div>
+          { teamMembers[0].body && (
+            <p class="designer-card__paragraph">{ teamMembers[0].body }</p>
+          )}
+          { teamMembers[0].data.website && (
+            <a class="designer-card__website-link" href={ `${ teamMembers[0].data.website } `} target="_blank">View Website</a>
+          )}
+          <a class="designer-card__profile-link" href={ `/people/${ teamMembers[0].slug } `}>More about me</a>
+        </div>
       </div>
 
       <Image 
@@ -226,12 +231,12 @@ console.log( Content );
     &__info {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      justify-content: space-between;
     }
 
     &__label {
       @include type-label;
-      margin: 0;
+      margin: 0 0 24px;
     }
     &__paragraph {
       @include type-intro;
@@ -239,6 +244,7 @@ console.log( Content );
       overflow: hidden;
       -webkit-line-clamp: 5;
       -webkit-box-orient: vertical;
+      margin: 0 0 24px;
     }
     &__profile-pic {
       width: 300px;
@@ -258,6 +264,7 @@ console.log( Content );
       background: #ffffff;
       color: #000000;
       padding: 14px 40px;
+      margin: 0 0 24px;
     }
     &__profile-link {
       @include type-cta;
@@ -278,9 +285,13 @@ console.log( Content );
       @include type-heading;
     }
     &__projects {
+      /*
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 28px;
+      */
+      columns: 2;
+      gap: 32px;
     }
   }
 </style>

@@ -1,6 +1,6 @@
 ---
 # primary arguments
-title: "home-sweet-home"
+title: "Home Sweet Home"
 listingImage: "Emma_Xing_Thumbnail.jpg"
 
 # references
@@ -19,4 +19,8 @@ imageGallery:
 # tertiary arguments
 tags:
 - "Mobile App Design"
+projectVideoUrl: "https://www.youtube.com/embed/Lc_X8SPa-sY?si=Y8xcUKnRjnHCNDfn"
+
+# base arguments
+draft: false
 ---

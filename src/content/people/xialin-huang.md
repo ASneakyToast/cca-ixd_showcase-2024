@@ -17,5 +17,5 @@ image: "/src/media/people/placeholder.jpg"
 #hobbies: "Surfing, hiking, camping, backpacking, playing with my dog."
 #funFact: "I love a challenge, so recently went on a 80km, 5 day Salkantay trek, hiking all the way to see Machu Picchu in Peru."
 
-draft: true
+draft: true #project isn't ready and no other content to show
 ---
